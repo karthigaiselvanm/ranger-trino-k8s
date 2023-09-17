@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: trino-coordinator
+  namespace: ranger
+spec:
+  serviceName: "trino-coordinator"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino-coordinator
+  template:
+    metadata:
+      labels:
+        app: trino-coordinator
+    spec:
+      initContainers:
+        - name: init-trino
+          image: trino-k8s-init:1.0.0
+          command: ["sh","/opt/trino/init-bash.sh"]
+          volumeMounts:
+            - mountPath: "/etc/trino"
+              name: trino-storage
+            - mountPath: "/etc/ranger-2.4.1-trino-plugin"
+              name: trino-ranger-plugin-storage
+      containers:
+        - name: coordinator-server
+          image: trino-k8s-coordinator:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: "/etc/trino"
+              name: trino-storage
+            - mountPath: "/etc/ranger-2.4.1-trino-plugin"
+              name: trino-ranger-plugin-storage
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "1500m"
+            limits:
+              memory: "1Gi"
+              cpu: "1500m"
+      volumes:
+        - name: trino-storage
+          emptyDir: {}
+        - name: trino-ranger-plugin-storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trino-coordinator-service
+  namespace: ranger
+  labels:
+    app: trino-coordinator
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: trino-coordinator
