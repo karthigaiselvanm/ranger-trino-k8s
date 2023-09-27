@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hue-config-saml
+data:
+  metadata: |
+    <?xml version="1.0" encoding="UTF-8"?><md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="https://accounts.google.com/o/saml2?idpid=" validUntil="2028-09-20T14:37:16.000Z">
+    </md:EntityDescriptor>
+  cert: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+  key: |
+    -----BEGIN PRIVATE KEY-----
+    -----END PRIVATE KEY-----

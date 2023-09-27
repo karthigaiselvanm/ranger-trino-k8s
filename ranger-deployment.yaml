@@ -495,7 +495,7 @@ spec:
           command: ['sh', '-c', 'until wget -qo- http://ranger-solr:8983/solr/ranger_audits/admin/ping; do echo "Waiting for Solr service to be ready..."; sleep 5; done;']
       containers:
         - name: ranger-admin-server
-          image: apache-ranger-2_4-k8s:0.0.1
+          image: apache-ranger-k8s:0.0.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

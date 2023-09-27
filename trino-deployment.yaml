@@ -16,7 +16,8 @@ spec:
     spec:
       initContainers:
         - name: init-trino
-          image: trino-k8s-init:1.0.0
+          image: trino-init-k8s:0.0.1
+          imagePullPolicy: Never
           command: ["sh","/opt/trino/init-bash.sh"]
           volumeMounts:
             - mountPath: "/etc/trino"
@@ -25,8 +26,8 @@ spec:
               name: trino-ranger-plugin-storage
       containers:
         - name: coordinator-server
-          image: trino-k8s-coordinator:1.0.0
-          imagePullPolicy: IfNotPresent
+          image: trino-coordinator-k8s:0.0.1
+          imagePullPolicy: Never
           ports:
             - name: http
               containerPort: 8080
